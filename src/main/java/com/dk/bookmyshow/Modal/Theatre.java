@@ -14,4 +14,6 @@ public class Theatre extends BaseModal {
     private String address;
     @OneToMany(mappedBy = "theatre")
     private List<Screen> screens;
+    @OneToMany(mappedBy = "theatre")
+    private List<Agent> agents;
 }

@@ -11,6 +11,6 @@ public class ShowSeat extends BaseModal {
     @ManyToOne
     private Seat seat;
     @Enumerated
+    @ManyToOne
     private ShowSeatType showSeatType;
-
 }

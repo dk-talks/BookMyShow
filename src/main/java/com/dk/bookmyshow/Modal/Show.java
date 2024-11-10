@@ -7,7 +7,7 @@ import jakarta.persistence.OneToMany;
 import java.util.Date;
 import java.util.List;
 
-@Entity
+@Entity(name = "shows")
 public class Show extends BaseModal {
     @ManyToOne
     private Movie movie;

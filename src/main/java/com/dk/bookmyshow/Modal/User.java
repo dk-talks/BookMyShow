@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 
-@Entity
+@Entity(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseModal {
     private String name;

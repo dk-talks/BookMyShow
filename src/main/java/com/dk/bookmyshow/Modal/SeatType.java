@@ -4,5 +4,5 @@ import jakarta.persistence.Entity;
 
 @Entity
 public class SeatType extends BaseModal{
-    private String seatTpe;
+    private String seatType;
 }

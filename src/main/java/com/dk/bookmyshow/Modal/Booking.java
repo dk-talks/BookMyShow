@@ -11,7 +11,7 @@ public class Booking extends BaseModal {
     @ManyToOne
     private Customer bookedBy;
     @OneToMany
-    private List<Seat> seats; // showSeat and Show will be deleted after few days.
+    private List<ShowSeat> showSeats;
     private double amount;
-
+    private int seatCount;
 }

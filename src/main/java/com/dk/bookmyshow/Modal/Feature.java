@@ -5,5 +5,4 @@ public enum Feature {
     ATMOS,
     TWO_D,
     THREE_D
-
 }

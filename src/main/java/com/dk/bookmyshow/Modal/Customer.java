@@ -8,6 +8,6 @@ import java.util.List;
 
 @Entity
 public class Customer extends User{
-    @OneToMany
+    @OneToMany(mappedBy = "bookedBy")
     List<Booking> bookings;
 }
