@@ -1,11 +1,11 @@
-package com.dk.bookmyshow.Modal;
+package com.dk.bookmyshow.models;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
@@ -16,10 +16,7 @@ public class ShowSeat extends BaseModal {
     private Show show;
     @ManyToOne
     private Seat seat;
-    @Enumerated
-    @ManyToOne
-    private ShowSeatType showSeatType;
     private SeatStatus seatStatus;
-    private Date blockedAt;
+    private LocalDateTime blockedAt;
 
 }

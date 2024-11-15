@@ -1,14 +1,15 @@
-package com.dk.bookmyshow.Modal;
+package com.dk.bookmyshow.models;
 
 import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class City extends BaseModal{
+public class Movie extends BaseModal{
     private String name;
+    private LocalDate releaseDate;
 }

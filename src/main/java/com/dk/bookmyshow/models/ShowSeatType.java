@@ -1,6 +1,7 @@
-package com.dk.bookmyshow.Modal;
+package com.dk.bookmyshow.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,5 +9,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 public class ShowSeatType extends BaseModal{
-    private String seatType;
+    @ManyToOne
+    private Show show;
+    @ManyToOne
+    private SeatType seatType;
+    private double price;
 }

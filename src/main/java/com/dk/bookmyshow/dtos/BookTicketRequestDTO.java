@@ -1,8 +1,5 @@
 package com.dk.bookmyshow.dtos;
 
-import com.dk.bookmyshow.Modal.Customer;
-import com.dk.bookmyshow.Modal.ShowSeat;
-
 import java.util.List;
 
 public class BookTicketRequestDTO {

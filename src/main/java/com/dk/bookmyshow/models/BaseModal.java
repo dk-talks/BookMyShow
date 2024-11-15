@@ -1,10 +1,8 @@
-package com.dk.bookmyshow.Modal;
+package com.dk.bookmyshow.models;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @MappedSuperclass

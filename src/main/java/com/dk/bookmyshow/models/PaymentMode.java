@@ -1,4 +1,4 @@
-package com.dk.bookmyshow.Modal;
+package com.dk.bookmyshow.models;
 
 public enum PaymentMode {
     UPI,

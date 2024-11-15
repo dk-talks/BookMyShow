@@ -1,35 +1,65 @@
 package com.dk.bookmyshow.config;
 
-import com.dk.bookmyshow.Modal.*;
-import com.dk.bookmyshow.repositories.CustomerRepository;
-import com.dk.bookmyshow.repositories.MovieRepository;
-import com.dk.bookmyshow.repositories.ShowSeatRepository;
-import org.slf4j.LoggerFactory;
+import com.dk.bookmyshow.models.*;
+import com.dk.bookmyshow.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.logging.Logger;
 
 @Profile("dev")
 @Component
 public class DataLoader implements CommandLineRunner {
 
+    private final ShowSeatTypeRepository showSeatTypeRepository;
     private CustomerRepository customerRepository;
     private ShowSeatRepository showSeatRepository;
     private MovieRepository movieRepository;
+    private AgentRepository agentRepository;
+    private BookingRepository bookingRepository;
+    private CityRepository cityRepository;
+    private PaymentRepository paymentRepository;
+    private ScreenRepository screenRepository;
+    private SeatRepository seatRepository;
+    private SeatTypeRepository seatTypeRepository;
+    private ShowRepository showRepository;
+    private TheatreRepository theatreRepository;
+    private UserRepository userRepository;
+
 
     //constructor injection
     public DataLoader(
             CustomerRepository customerRepository,
             ShowSeatRepository showSeatRepository,
-            MovieRepository movieRepository
-    ) {
+            MovieRepository movieRepository,
+            AgentRepository agentRepository,
+            BookingRepository bookingRepository,
+            CityRepository cityRepository,
+            PaymentRepository paymentRepository,
+            ScreenRepository screenRepository,
+            SeatRepository seatRepository,
+            SeatTypeRepository seatTypeRepository,
+            ShowRepository showRepository,
+            TheatreRepository theatreRepository,
+            UserRepository userRepository,
+            ShowSeatTypeRepository showSeatTypeRepository) {
         this.customerRepository = customerRepository;
         this.showSeatRepository = showSeatRepository;
         this.movieRepository = movieRepository;
+        this.agentRepository = agentRepository;
+        this.bookingRepository = bookingRepository;
+        this.cityRepository = cityRepository;
+        this.paymentRepository = paymentRepository;
+        this.screenRepository = screenRepository;
+        this.seatRepository = seatRepository;
+        this.seatTypeRepository = seatTypeRepository;
+        this.showRepository = showRepository;
+        this.theatreRepository = theatreRepository;
+        this.userRepository = userRepository;
+        this.showSeatTypeRepository = showSeatTypeRepository;
     }
 
     @Override
@@ -88,6 +118,8 @@ public class DataLoader implements CommandLineRunner {
         City city2 = new City();
         city2.setName("Kotputli");
 
+        cityRepository.saveAll(new ArrayList<>(Arrays.asList(city1, city2)));
+
         // Theatre
 
         Theatre t1 = new Theatre();
@@ -99,6 +131,8 @@ public class DataLoader implements CommandLineRunner {
         t2.setCity(city2);
         t2.setAddress("Near Deewan Hotel, Kotputli");
         t2.setName("Heeramoti Cinema");
+
+        theatreRepository.saveAll(new ArrayList<>(Arrays.asList(t1, t2)));
 
         // Gold cinema agent
         Agent goldAgent = new Agent();
@@ -114,6 +148,8 @@ public class DataLoader implements CommandLineRunner {
         heeraAgent.setEmail("lucky@heera.in");
         heeraAgent.setEmail("HeeraPassword");
 
+        agentRepository.saveAll(new ArrayList<>(Arrays.asList(goldAgent, heeraAgent)));
+
         // Gold seats and screens
         List<Seat> gold_2d_seats = new ArrayList<>();
 
@@ -121,6 +157,7 @@ public class DataLoader implements CommandLineRunner {
 
         SeatType goldSeatType = new SeatType();
         goldSeatType.setSeatType("Gold Basic");
+
         for(int i = 0; i<10; i++) {
             Seat seat = new Seat();
             seat.setScreen(screen1);
@@ -147,8 +184,11 @@ public class DataLoader implements CommandLineRunner {
 
         SeatType heeraBasicSeatType = new SeatType();
         heeraBasicSeatType.setSeatType("Heera Basic");
+
         SeatType heeraPremiuSeatType = new SeatType();
         heeraPremiuSeatType.setSeatType("Heera Premium");
+
+        seatTypeRepository.saveAll(new ArrayList<>(Arrays.asList(heeraBasicSeatType, heeraPremiuSeatType, goldSeatType)));
 
         for(int i = 0; i<20; i++) {
             Seat seat = new Seat();
@@ -166,6 +206,7 @@ public class DataLoader implements CommandLineRunner {
         screen2.setTheatre(t2);
         screen2.setSeats(heera_3d_seats);
 
+        screenRepository.saveAll(new ArrayList<>(Arrays.asList(screen1, screen2)));
         // create the shows
 
         List<ShowSeat> show1Seats = new ArrayList<>();
@@ -175,11 +216,45 @@ public class DataLoader implements CommandLineRunner {
         // fetch all list from seat database for screen2
         // and assign them to show1Seats
 
+        // fetch all seats from screen 2
+        List<Seat> screen2Seats = seatRepository.findAllByScreen(screen2);
 
+        for(Seat seat: screen2Seats) {
+            ShowSeat showSeat = new ShowSeat();
+            showSeat.setSeatStatus(seat.getSeatStatus());
+            showSeat.setShow(show1);
+            showSeat.setSeat(seat);
+            show1Seats.add(showSeat);
+        }
 
         show1.setMovie(m1);
         show1.setScreen(screen2);
-//        show1.set
+        show1.setMovie(m1);
+        show1.setShowSeats(show1Seats);
+        show1.setStartTime(LocalDateTime.of(2024, 11, 20, 10, 0));
+        show1.setEndTime(LocalDateTime.of(2024, 11, 20, 13, 0));
+
+        //persist show in database
+        showRepository.save(show1);
+
+
+        // Show SeatType - two types of seats for show1
+
+        //fetch all seatTypes from show1;
+
+
+        ShowSeatType type1 = new ShowSeatType();
+        type1.setPrice(100);
+        type1.setSeatType(heeraBasicSeatType);
+        type1.setShow(show1);
+
+        ShowSeatType type2 = new ShowSeatType();
+        type2.setPrice(200);
+        type2.setSeatType(heeraPremiuSeatType);
+        type2.setShow(show1);
+
+        showSeatTypeRepository.saveAll(new ArrayList<>(Arrays.asList(type1, type2)));
+
 
 
 
