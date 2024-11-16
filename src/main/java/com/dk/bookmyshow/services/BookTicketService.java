@@ -5,6 +5,7 @@ import com.dk.bookmyshow.models.*;
 import com.dk.bookmyshow.repositories.CustomerRepository;
 import com.dk.bookmyshow.repositories.ShowSeatRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
@@ -22,8 +23,7 @@ public class BookTicketService {
         this.showSeatRepository = showSeatRepository;
     }
 
-
-    synchronized Booking bookTicket(Integer id, List<Integer> showSeatIds) throws Exception {
+    public Booking bookTicket(Integer id, List<Integer> showSeatIds) throws Exception {
 
         /*
         1. check if customer is present
