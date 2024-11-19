@@ -2,6 +2,7 @@ package com.dk.bookmyshow.services;
 
 import com.dk.bookmyshow.exceptions.SeatNotAvailableException;
 import com.dk.bookmyshow.models.*;
+import com.dk.bookmyshow.repositories.BookingRepository;
 import com.dk.bookmyshow.repositories.CustomerRepository;
 import com.dk.bookmyshow.repositories.ShowSeatRepository;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,14 @@ public class BookTicketService {
 
     private final CustomerRepository customerRepository;
     private final ShowSeatRepository showSeatRepository;
+    private final AmountCalculationService amountCalculationService;
+    private final BookingRepository bookingRepository;
 
-    public BookTicketService(CustomerRepository customerRepository, ShowSeatRepository showSeatRepository) {
+    public BookTicketService(CustomerRepository customerRepository, ShowSeatRepository showSeatRepository, AmountCalculationService amountCalculationService, BookingRepository bookingRepository) {
         this.customerRepository = customerRepository;
         this.showSeatRepository = showSeatRepository;
+        this.amountCalculationService = amountCalculationService;
+        this.bookingRepository = bookingRepository;
     }
 
     public Booking bookTicket(Integer id, List<Integer> showSeatIds) throws Exception {
@@ -34,10 +39,16 @@ public class BookTicketService {
         6. Once the payment is successful for the Booking, mark ispaymntDone = true
         7. Mark all seats to Booked.
          */
-
+        if(showSeatIds.isEmpty()) {
+            throw new RuntimeException("Not seat is selected to book");
+        }
         Customer customer = customerRepository.findById(id).orElseThrow(()-> new UserPrincipalNotFoundException("Customer not found"));
 
         List<ShowSeat> showSeatList = showSeatRepository.findAllById(showSeatIds);
+
+        if(showSeatIds.size() != showSeatList.size()) {
+            throw new RuntimeException("Some Show Seats Ids are invalid and not present in database");
+        }
 
         for(ShowSeat showSeat: showSeatList) {
             if(!showSeat.getSeatStatus().equals(SeatStatus.AVAILABLE)) {
@@ -53,8 +64,6 @@ public class BookTicketService {
             showSeatRepository.save(showSeat);
         }
 
-        AmountCalculationService amountCalculationService = new AmountCalculationService();
-
         double amount = amountCalculationService.calculateAmount(showSeatList);
 
         Booking booking = new Booking();
@@ -64,9 +73,7 @@ public class BookTicketService {
         booking.setShowSeats(showSeatList);
         booking.setSeatCount(showSeatList.size());
         booking.setBookingStatus(BookingStatus.PENDING);
-
-        return booking;
-
+        return bookingRepository.save(booking);
 
     }
 

@@ -1,11 +1,16 @@
 package com.dk.bookmyshow.config;
 
+import com.dk.bookmyshow.controllers.BookTicketController;
+import com.dk.bookmyshow.dtos.BookTicketRequestDTO;
+import com.dk.bookmyshow.dtos.BookTicketResponseDTo;
+import com.dk.bookmyshow.dtos.ResponseStatus;
 import com.dk.bookmyshow.models.*;
 import com.dk.bookmyshow.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -28,6 +33,8 @@ public class DataLoader implements CommandLineRunner {
     private ShowRepository showRepository;
     private TheatreRepository theatreRepository;
     private UserRepository userRepository;
+    private BookTicketController bookTicketController;
+
 
 
     //constructor injection
@@ -45,7 +52,8 @@ public class DataLoader implements CommandLineRunner {
             ShowRepository showRepository,
             TheatreRepository theatreRepository,
             UserRepository userRepository,
-            ShowSeatTypeRepository showSeatTypeRepository) {
+            ShowSeatTypeRepository showSeatTypeRepository,
+            BookTicketController bookTicketController) {
         this.customerRepository = customerRepository;
         this.showSeatRepository = showSeatRepository;
         this.movieRepository = movieRepository;
@@ -60,6 +68,7 @@ public class DataLoader implements CommandLineRunner {
         this.theatreRepository = theatreRepository;
         this.userRepository = userRepository;
         this.showSeatTypeRepository = showSeatTypeRepository;
+        this.bookTicketController = bookTicketController;
     }
 
     @Override
@@ -256,7 +265,17 @@ public class DataLoader implements CommandLineRunner {
         showSeatTypeRepository.saveAll(new ArrayList<>(Arrays.asList(type1, type2)));
 
 
+        // book a ticket (for demo purpose)
 
+        BookTicketRequestDTO requestDTO = new BookTicketRequestDTO();
+        requestDTO.setCustomerId(customer1.getId());
+        requestDTO.setShowSeatIds(new ArrayList<>(Arrays.asList(1, 15)));
+        BookTicketResponseDTo responseDTo = bookTicketController.bookTicket(requestDTO);
+        if(responseDTo.getStatus().equals(ResponseStatus.SUCCESS)) {
+            System.out.println("Successfully booked tickets");
+        } else {
+            System.out.println("Issue in booking ticket");
+        }
 
 
 
